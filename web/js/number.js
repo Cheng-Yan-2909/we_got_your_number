@@ -81,17 +81,19 @@ function genAllNumberCombo(arr, num = []) {
     }
 }
 
-function flatmap() {
+function flatmap(arr) {
     n = {};
-    for( var i in all_num_combo_list ) {
-        var k = parseInt(all_num_combo_list[i].join(""));
+    for( var i in arr ) {
+        var k = parseInt(arr[i].join(""));
         n[k] = k;
     }
 
-    all_num_combo_list = []
+    flat_list = []
     for( k in n ) {
-        all_num_combo_list.push(k);
+        flat_list.push(k);
     }
+
+    return flat_list;
 }
 
 function solve(elementId) {
@@ -99,7 +101,7 @@ function solve(elementId) {
     var answer_box = document.getElementById(elementId);
 
     genAllNumberCombo(number_list);
-    flatmap();
+    all_num_combo_list = flatmap( all_num_combo_list );
 
     answer_box.innerHTML = all_num_combo_list.join("<br>\n");
 }
