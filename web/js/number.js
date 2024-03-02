@@ -62,7 +62,7 @@ function log(msg) {
     console.log(msg)
 }
 
-function genAllNumberCombo(arr, num = [], all_num_combo_list = []) {
+function genPermutations(arr, singleLevel=true,  num = [], all_num_combo_list = []) {
     if( arr.length == 0 ) {
         all_num_combo_list.push(num)
     }
@@ -72,16 +72,18 @@ function genAllNumberCombo(arr, num = [], all_num_combo_list = []) {
             var next = curr.splice(k, 1);
             log("curr: " + curr);
             log("next: " + next);
-            genAllNumberCombo(curr.slice(), num.concat(next), all_num_combo_list);
-            if(curr.length > 0) {
-                genAllNumberCombo(curr, [], all_num_combo_list);
+            genPermutations(curr.slice(), singleLevel, num.concat(next), all_num_combo_list);
+            if( !singleLevel ) {
+                if(curr.length > 0) {
+                    genPermutations(curr, singleLevel, [], all_num_combo_list);
+                }
             }
         }
     }
     return all_num_combo_list;
 }
 
-function flatmap(arr, isInt = true) {
+function flatmap(arr, isInt = false) {
     n = {};
     for( var i in arr ) {
         var k = arr[i];
@@ -111,12 +113,12 @@ function solve(num_div, answer_div) {
     var num_box = document.getElementById(num_div);
     var answer_box = document.getElementById(answer_div);
 
-    var input_num_list = genAllNumberCombo(number_list);
+    var input_num_list = genPermutations(number_list);
     input_num_list = flatmap( input_num_list );
 
     num_box.innerHTML = input_num_list.join("<br>\n");
     
-    var operator_keys = genAllNumberCombo(getAllOperatorKeys());
+    var operator_keys = genPermutations(getAllOperatorKeys(), false);
     operator_keys = flatmap(operator_keys, false);
     answer_box.innerHTML = operator_keys.join("<br>\n");
 }
