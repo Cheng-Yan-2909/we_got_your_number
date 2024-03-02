@@ -48,7 +48,7 @@ function create_number(elementId) {
     number_list = [];
     for( var i = 0; i < 4; i++) {
         number_list.push(
-            Math.floor(Math.random() * 11)
+            Math.floor(Math.random() * 10)
         );
     }
     num_element.innerHTML = number_list.join(", ");
@@ -56,26 +56,51 @@ function create_number(elementId) {
 
 /////////////
 
-function genAllNumberCombo() {
-    var num_list = [];
-    for(var k = 0; k < 4; k++) { // starting number
-        num_list.push(number_list[k])
-        var n = number_list[k];
-        for( var i = 1; i < 4; i++ ) {
-            var a = (k + i) % 4;
-            n = (n * 10) + number_list[a];
-            num_list.push(n)
+var all_num_combo_list = [];
+
+function contains(the_list, val) {
+    for( var i in the_list  ) {
+        console.log(" -- contains -- checking " + i + " / " + val);
+        if( the_list[i] == val ) {
+            return true
         }
     }
+    return false;
+}
 
-    return num_list;
+function getCombWithPrefix(index_list = [], num) {
+    console.log(" --> getCombWithPrefix( " + index_list.join(",") + ", " + num + " )");
+    num = num * 10;
+    for( var k = 0; k < 4; k++ ) {
+        console.log("getCombWithPrefix: k=" + k);
+        if( contains(index_list, k) ) {
+            console.log(" -- already processed");
+            continue;
+        }
+        index_list.push(k);
+        num += number_list[k]
+        console.log(" -- num = " + num);
+        console.log(" -- index_list = " + index_list.join(", "))
+        all_num_combo_list.push(num);
+        getCombWithPrefix(index_list, num);
+        
+    }
+}
+
+function genAllNumberCombo() {
+    all_num_combo_list = [];
+    for(var k = 0; k < 4; k++) { // starting number
+        all_num_combo_list.push(number_list[k]);
+        console.log("===== genAllNumberCombo: k => " + k + " / " + number_list[k] + "  ========");
+        getCombWithPrefix([k], number_list[k]);
+    }
 }
 
 function solve(elementId) {
     var answer_box = document.getElementById(elementId);
-    var all_numbers = genAllNumberCombo();
+    genAllNumberCombo();
 
-    answer_box.innerHTML = all_numbers.join("<br>\n");
+    answer_box.innerHTML = all_num_combo_list.join("<br>\n");
 }
 
 
