@@ -31,7 +31,7 @@ function fact(a) {
     return a * fact(a - 1)
 }
 
-var operator = {
+var operators = {
     "+": add,
     "-": sub,
     "*": mul,
@@ -56,14 +56,13 @@ function create_number(elementId) {
 
 /////////////
 
-var all_num_combo_list = [];
 var enable_logging = false;
 function log(msg) {
     if( !enable_logging ) return;
     console.log(msg)
 }
 
-function genAllNumberCombo(arr, num = []) {
+function genAllNumberCombo(arr, num = [], all_num_combo_list = []) {
     if( arr.length == 0 ) {
         all_num_combo_list.push(num)
     }
@@ -73,18 +72,22 @@ function genAllNumberCombo(arr, num = []) {
             var next = curr.splice(k, 1);
             log("curr: " + curr);
             log("next: " + next);
-            genAllNumberCombo(curr.slice(), num.concat(next));
+            genAllNumberCombo(curr.slice(), num.concat(next), all_num_combo_list);
             if(curr.length > 0) {
-                genAllNumberCombo(curr);
+                genAllNumberCombo(curr, [], all_num_combo_list);
             }
         }
     }
+    return all_num_combo_list;
 }
 
-function flatmap(arr) {
+function flatmap(arr, isInt = true) {
     n = {};
     for( var i in arr ) {
-        var k = parseInt(arr[i].join(""));
+        var k = arr[i];
+        if( isInt ) {
+            k = parseInt(k.join(""));
+        }
         n[k] = k;
     }
 
@@ -96,14 +99,26 @@ function flatmap(arr) {
     return flat_list;
 }
 
-function solve(elementId) {
-    all_num_combo_list = [];
-    var answer_box = document.getElementById(elementId);
+function getAllOperatorKeys() {
+    var operater_keys = []
+    for( var k in operators ) {
+        operater_keys.push( k );
+    }
+    return operater_keys;
+}
 
-    genAllNumberCombo(number_list);
-    all_num_combo_list = flatmap( all_num_combo_list );
+function solve(num_div, answer_div) {
+    var num_box = document.getElementById(num_div);
+    var answer_box = document.getElementById(answer_div);
 
-    answer_box.innerHTML = all_num_combo_list.join("<br>\n");
+    var input_num_list = genAllNumberCombo(number_list);
+    input_num_list = flatmap( input_num_list );
+
+    num_box.innerHTML = input_num_list.join("<br>\n");
+    
+    var operator_keys = genAllNumberCombo(getAllOperatorKeys());
+    operator_keys = flatmap(operator_keys, false);
+    answer_box.innerHTML = operator_keys.join("<br>\n");
 }
 
 

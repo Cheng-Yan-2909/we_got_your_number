@@ -5,12 +5,18 @@
         <div id="menu">
             <button onclick="create_number('numbers')">Create Number</button>
             |
-            <button onclick="solve('answer')">Solve</button>
+            <button onclick="solve('all_numbers', 'answer')">Solve</button>
         </div>
         <div id="numbers"> </div>
         <hr/>
-        <div id="answer">
-
+        <div style="float: left;margin-left: 20px;">
+            All Input Permutations
+            <div id="all_numbers"> </div>
         </div>
+        <div style="float: right;margin-right: 25px;">
+            All Answers
+            <div id="answer">  </div>
+        </div>
+        <div style="clear: both;"></div>
     </body>
 </html>
