@@ -57,48 +57,49 @@ function create_number(elementId) {
 /////////////
 
 var all_num_combo_list = [];
-
-function contains(the_list, val) {
-    for( var i in the_list  ) {
-        console.log(" -- contains -- checking " + i + " / " + val);
-        if( the_list[i] == val ) {
-            return true
-        }
-    }
-    return false;
+var enable_logging = false;
+function log(msg) {
+    if( !enable_logging ) return;
+    console.log(msg)
 }
 
-function getCombWithPrefix(index_list = [], num) {
-    console.log(" --> getCombWithPrefix( " + index_list.join(",") + ", " + num + " )");
-    num = num * 10;
-    for( var k = 0; k < 4; k++ ) {
-        console.log("getCombWithPrefix: k=" + k);
-        if( contains(index_list, k) ) {
-            console.log(" -- already processed");
-            continue;
+function genAllNumberCombo(arr, num = []) {
+    if( arr.length == 0 ) {
+        all_num_combo_list.push(num)
+    }
+    else {
+        for(var k = 0; k < arr.length; k++) { // starting number
+            var curr = arr.slice();
+            var next = curr.splice(k, 1);
+            log("curr: " + curr);
+            log("next: " + next);
+            genAllNumberCombo(curr.slice(), num.concat(next));
+            if(curr.length > 0) {
+                genAllNumberCombo(curr);
+            }
         }
-        index_list.push(k);
-        num += number_list[k]
-        console.log(" -- num = " + num);
-        console.log(" -- index_list = " + index_list.join(", "))
-        all_num_combo_list.push(num);
-        getCombWithPrefix(index_list, num);
-        
     }
 }
 
-function genAllNumberCombo() {
-    all_num_combo_list = [];
-    for(var k = 0; k < 4; k++) { // starting number
-        all_num_combo_list.push(number_list[k]);
-        console.log("===== genAllNumberCombo: k => " + k + " / " + number_list[k] + "  ========");
-        getCombWithPrefix([k], number_list[k]);
+function flatmap() {
+    n = {};
+    for( var i in all_num_combo_list ) {
+        var k = parseInt(all_num_combo_list[i].join(""));
+        n[k] = k;
+    }
+
+    all_num_combo_list = []
+    for( k in n ) {
+        all_num_combo_list.push(k);
     }
 }
 
 function solve(elementId) {
+    all_num_combo_list = [];
     var answer_box = document.getElementById(elementId);
-    genAllNumberCombo();
+
+    genAllNumberCombo(number_list);
+    flatmap();
 
     answer_box.innerHTML = all_num_combo_list.join("<br>\n");
 }
